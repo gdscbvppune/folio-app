@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'homeScreen.dart';
+import 'experiencePage.dart';
 import 'blogScreen.dart';
 
 class PageHandler extends StatefulWidget{
@@ -55,6 +56,17 @@ class PageHandlerState extends State<PageHandler> {
                 "About"
               ),
               onTap: () {
+              },
+            ),
+            ListTile(
+              title: Text(
+                "Experience"
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                setState(() {
+                  currentPage = ExperiencePage();
+                });
               },
             ),
             ListTile(
