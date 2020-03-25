@@ -1,0 +1,16 @@
+{
+    "projects": [
+        {
+            "title": "NPTEL Downloader",
+            "shortDescription": "A command line tool to help download NPTEL courses.",
+            "id": "1",
+            "github": "https://github.com/dewanshrawat15/nptel-downloader"
+        },
+        {
+            "title": "MIT OCW Downloader",
+            "shortDescription": "A command line tool to help download MIT OCW courses.",
+            "id": "2",
+            "github": "https://github.com/dewanshrawat15/mit-video-downloader"
+        }
+    ]
+}
