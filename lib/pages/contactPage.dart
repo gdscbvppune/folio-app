@@ -1,39 +1,36 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:convert';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'editHomeScreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class HomeScreen extends StatefulWidget {
-
+class ContactPage extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _ContactPageState createState() => _ContactPageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ContactPageState extends State<ContactPage> {
 
-  var details;
+  var content, details;
 
   fetchDetails() async{
-    var ref = Firestore.instance;
-    var fetchDet = await ref.collection("details").document("details").get();
+    var ref = Firestore.instance.collection("details");
+    var tempContent = await ref.document("content").get();
+    var tempDetails = await ref.document("details").get();
     setState(() {
-      details = fetchDet;
+      content = tempContent;
+      details = tempDetails;
     });
-  }
-
-  String formEmail(String text){
-    return "mailto:" + text;
   }
 
   @override
   void initState() {
     fetchDetails();
     super.initState();
+  }
+  
+  String formEmail(String text){
+    return "mailto:" + text;
   }
 
   @override
@@ -47,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Scaffold.of(context).openDrawer();
           },
           child: Padding(
-            padding: EdgeInsets.all(12),
+            padding: EdgeInsets.all(8),
             child: Icon(
               Icons.menu,
               color: Colors.black,
@@ -55,39 +52,37 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: details != null ? SingleChildScrollView(
+      body: content != null && details != null ? SingleChildScrollView(
         child: Center(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               SizedBox(
-                height: MediaQuery.of(context).size.height / 5,
-              ),
-              CircleAvatar(
-                radius: 72,
-                backgroundImage: NetworkImage(
-                  details["profileImage"]
-                ),
-              ),
-              SizedBox(
-                height: 48,
+                height: MediaQuery.of(context).size.height / 9,
               ),
               Text(
-                details["name"],
+                "Contact Me",
                 style: GoogleFonts.raleway(
-                  fontSize: 42
+                  fontSize: 28
                 ),
               ),
               SizedBox(
-                height: 24,
+                height: 12,
               ),
-              Text(
-                details["tagline"],
-                style: GoogleFonts.varelaRound(
-                  fontSize: 24
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: 18,
+                  horizontal: 24
+                ),
+                child: Text(
+                  content["contactContent"],
+                  style: GoogleFonts.openSans(
+                    fontSize: 18
+                  ),
                 ),
               ),
               SizedBox(
-                height: 24,
+                height: 32,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -194,108 +189,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height / 5,
+                height: 64,
+              ),
+              Text(
+                content["footerText"] + " " + details["name"],
+                style: GoogleFonts.raleway(
+                  fontSize: 24
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 9,
               )
             ],
           ),
         ),
       ) : Center(
         child: CircularProgressIndicator(),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          FloatingActionButton(
-            onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => EditHomeScreen(
-                    pageTitle: "Edit Details",
-                    name: details["name"],
-                    tagline: details["tagline"],
-                    aboutMe: details["aboutMe"],
-                    email: details["email"],
-                    instaLink: details["instagram"],
-                    twitterLink: details["twitter"],
-                    facebookLink: details["facebook"],
-                    linkedin: details["linkedin"],
-                    githubLink: details["github"],
-                    spotify: details["spotify"],
-                    fiveHundredPx: details["fiveHundredPx"],
-                    medium: details["medium"],
-                    greeting: details["greeting"],
-                    resume: details["resumeLink"],
-                    profileImg: details["profileImage"]
-                  )
-                )
-              ).then((onValue){
-                setState(() {
-                  fetchDetails();
-                });
-              });
-            },
-            child: Icon(
-              Icons.edit
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          InitFloatingActionButton()
-        ],
-      ),
-    );
-  }
-}
-
-class InitFloatingActionButton extends StatelessWidget {
-  const InitFloatingActionButton({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () async{
-        var ref = Firestore.instance;
-        var src = await DefaultAssetBundle.of(context).loadString("assets/data/init.json");
-        var contentSrc = await DefaultAssetBundle.of(context).loadString("assets/data/content.json");
-        var contentData = await json.decode(contentSrc);
-        await ref.collection("details").document("content").setData(contentData);
-        var experienceSrc = await DefaultAssetBundle.of(context).loadString("assets/data/experience.json");
-        Map experienceData = await json.decode(experienceSrc.toString());
-        for (var i = 0; i < experienceData["experience"].length; i++) {
-          var docID = experienceData["experience"][i]["id"];
-          Map data = experienceData["experience"][i];
-          await ref.collection("experience").document(docID).setData(data);
-        }
-        var itemToUpload = await DefaultAssetBundle.of(context).load("assets/images/avatar.jpg");
-        Uint8List data = itemToUpload.buffer.asUint8List();
-        var storageRef = FirebaseStorage.instance.ref().child("profileImage");
-        StorageUploadTask uploadTask = storageRef.putData(data);
-        StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-        var imgURL = await taskSnapshot.ref.getDownloadURL();
-        Map temp = json.decode(src);
-        temp["details"]["profileImage"] = imgURL;
-        await ref.collection("details").document("details").setData(temp["details"]);
-        var projectsData = await DefaultAssetBundle.of(context).loadString("assets/data/projects.json");
-        Map projectsJson = await json.decode(projectsData.toString());
-        for (var i = 0; i < projectsJson["projects"].length; i++) {
-          var docID = projectsJson["projects"][i]["id"];
-          Map data = projectsJson["projects"][i];
-          await ref.collection("projects").document(docID).setData(data);
-        }
-        var snackbar = SnackBar(
-          content: Text(
-            "Website has been initialised"
-          )
-        );
-        Scaffold.of(context).showSnackBar(snackbar);
-      },
-      heroTag: "Initialize data",
-      child: Icon(
-        Icons.autorenew
       ),
     );
   }

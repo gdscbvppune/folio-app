@@ -14,6 +14,18 @@ class _PortfolioState extends State<Portfolio> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(
+          onTap: (){
+            Scaffold.of(context).openDrawer();
+          },
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: Icon(
+              Icons.menu,
+              color: Colors.white,
+            ),
+          ),
+        ),
         centerTitle: true,
         title: Text(
           "Projects"

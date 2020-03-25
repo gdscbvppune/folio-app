@@ -14,6 +14,18 @@ class _ExperiencePageState extends State<ExperiencePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(
+          onTap: (){
+            Scaffold.of(context).openDrawer();
+          },
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: Icon(
+              Icons.menu,
+              color: Colors.white,
+            ),
+          ),
+        ),
         title: Text(
           "Positions of Responsibility",
           style: GoogleFonts.montserrat(

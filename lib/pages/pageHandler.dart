@@ -3,6 +3,7 @@ import 'homeScreen.dart';
 import 'experiencePage.dart';
 import 'blogScreen.dart';
 import 'portfolioScreen.dart';
+import 'contactPage.dart';
 
 class PageHandler extends StatefulWidget{
 
@@ -97,6 +98,10 @@ class PageHandlerState extends State<PageHandler> {
                 "Contact"
               ),
               onTap: () {
+                Navigator.pop(context);
+                setState(() {
+                  this.currentPage = ContactPage();
+                });
               },
             ),
             Divider(),
