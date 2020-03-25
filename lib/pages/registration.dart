@@ -1,29 +1,11 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class Register extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(),
-    );
-  }
+  _RegisterState createState() => _RegisterState();
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
   var height = MediaQuery.of(context).size.height;
@@ -96,7 +78,7 @@ class _RegistrationState extends State<Registration> {
             ),
             TextField(
                controller: text2,
-               maxLines: 2,
+               maxLines: 1,
                autocorrect: true,
                decoration: InputDecoration(
                 hintText:'Project Description', 
@@ -130,7 +112,7 @@ class _RegistrationState extends State<Registration> {
             ),
             TextField(
                controller: text4,
-               maxLines: 2,
+               maxLines: 1,
                autocorrect: false,
                decoration: InputDecoration(
                 hintText:'Technology Used', 
@@ -148,7 +130,7 @@ class _RegistrationState extends State<Registration> {
             ),
             TextField(
                controller: text5,
-               maxLines: 2,
+               maxLines: 1,
                autocorrect: true,
                decoration: InputDecoration(
                 hintText:'Challenge Faced',
@@ -191,6 +173,7 @@ class _RegistrationState extends State<Registration> {
                       text4.text.isEmpty ? validate4=true:validate4=false;
                       text5.text.isEmpty ? validate5=true:validate5=false;
                       text6.text.isEmpty ? validate6=true:validate6=false;
+
 
                   });
                 },
