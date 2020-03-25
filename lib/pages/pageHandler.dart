@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'homeScreen.dart';
 import 'experiencePage.dart';
 import 'blogScreen.dart';
+import 'portfolioScreen.dart';
 
 class PageHandler extends StatefulWidget{
 
@@ -74,6 +75,10 @@ class PageHandlerState extends State<PageHandler> {
                 "Portfolio"
               ),
               onTap: () {
+                Navigator.pop(context);
+                setState(() {
+                  currentPage = Portfolio();
+                });
               },
             ),
             ListTile(
