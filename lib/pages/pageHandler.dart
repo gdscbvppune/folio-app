@@ -4,6 +4,7 @@ import 'experiencePage.dart';
 import 'blogScreen.dart';
 import 'portfolioScreen.dart';
 import 'contactPage.dart';
+import 'aboutMe.dart';
 
 class PageHandler extends StatefulWidget{
 
@@ -20,7 +21,7 @@ class PageHandlerState extends State<PageHandler> {
   
   @override
   void initState() {
-    this.currentPage = HomeScreen();
+    this.currentPage = AboutScreen();
     super.initState();
   }
 
@@ -58,6 +59,10 @@ class PageHandlerState extends State<PageHandler> {
                 "About"
               ),
               onTap: () {
+                Navigator.pop(context);
+                setState(() {
+                  this.currentPage = AboutScreen();
+                });
               },
             ),
             ListTile(
@@ -102,15 +107,6 @@ class PageHandlerState extends State<PageHandler> {
                 setState(() {
                   this.currentPage = ContactPage();
                 });
-              },
-            ),
-            Divider(),
-            ListTile(
-              title: Text(
-                "About the app"
-              ),
-              onTap: (){
-                print("hello world");
               },
             )
           ],
