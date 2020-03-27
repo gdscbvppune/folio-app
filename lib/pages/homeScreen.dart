@@ -17,17 +17,33 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   var details;
+  bool loading = true;
 
   fetchDetails() async{
     var ref = Firestore.instance;
     var fetchDet = await ref.collection("details").document("details").get();
     setState(() {
-      details = fetchDet;
+      details = fetchDet.data == null ? null : fetchDet.data;
+      loading = false;
     });
   }
 
   String formEmail(String text){
     return "mailto:" + text;
+  }
+
+  String createDocID(String text){
+    var words = text.split(' ');
+    String docID = '';
+    int counter = 0;
+    for (var item in words){
+      docID = docID + item.toLowerCase().toString();
+      counter = counter + 1;
+      if(counter < words.length){
+        docID = docID + "-";
+      }
+    }
+    return docID;
   }
 
   @override
@@ -199,13 +215,27 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      ) : Center(
+      ) : loading ? Center(
         child: CircularProgressIndicator(),
+      ) : Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 32
+          ),
+          child: Text(
+            "Content not found. Press the sync button to initialise data!",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.openSans(
+              fontSize: 18,
+            ),
+          ),
+        ),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          FloatingActionButton(
+          loading == false ? FloatingActionButton(
             onPressed: (){
               Navigator.push(
                 context,
@@ -238,64 +268,71 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Icon(
               Icons.edit
             ),
-          ),
+          ): Text(""),
           SizedBox(
             height: 20,
           ),
-          InitFloatingActionButton()
-        ],
-      ),
-    );
-  }
-}
-
-class InitFloatingActionButton extends StatelessWidget {
-  const InitFloatingActionButton({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () async{
-        var ref = Firestore.instance;
-        var src = await DefaultAssetBundle.of(context).loadString("assets/data/init.json");
-        var contentSrc = await DefaultAssetBundle.of(context).loadString("assets/data/content.json");
-        var contentData = await json.decode(contentSrc);
-        await ref.collection("details").document("content").setData(contentData);
-        var experienceSrc = await DefaultAssetBundle.of(context).loadString("assets/data/experience.json");
-        Map experienceData = await json.decode(experienceSrc.toString());
-        for (var i = 0; i < experienceData["experience"].length; i++) {
-          var docID = experienceData["experience"][i]["id"];
-          Map data = experienceData["experience"][i];
-          await ref.collection("experience").document(docID).setData(data);
-        }
-        var itemToUpload = await DefaultAssetBundle.of(context).load("assets/images/avatar.jpg");
-        Uint8List data = itemToUpload.buffer.asUint8List();
-        var storageRef = FirebaseStorage.instance.ref().child("profileImage");
-        StorageUploadTask uploadTask = storageRef.putData(data);
-        StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-        var imgURL = await taskSnapshot.ref.getDownloadURL();
-        Map temp = json.decode(src);
-        temp["details"]["profileImage"] = imgURL;
-        await ref.collection("details").document("details").setData(temp["details"]);
-        var projectsData = await DefaultAssetBundle.of(context).loadString("assets/data/projects.json");
-        Map projectsJson = await json.decode(projectsData.toString());
-        for (var i = 0; i < projectsJson["projects"].length; i++) {
-          var docID = projectsJson["projects"][i]["id"];
-          Map data = projectsJson["projects"][i];
-          await ref.collection("projects").document(docID).setData(data);
-        }
-        var snackbar = SnackBar(
-          content: Text(
-            "Website has been initialised"
+          FloatingActionButton(
+            onPressed: () async{
+              var ref = Firestore.instance;
+              var src = await DefaultAssetBundle.of(context).loadString("assets/data/init.json");
+              var contentSrc = await DefaultAssetBundle.of(context).loadString("assets/data/content.json");
+              var experienceSrc = await DefaultAssetBundle.of(context).loadString("assets/data/experience.json");
+              var competitionSrc = await DefaultAssetBundle.of(context).loadString("assets/data/competitions.json");
+              var blogSrc = await DefaultAssetBundle.of(context).loadString("assets/data/blogs.json");
+              var blogJson = await json.decode(blogSrc);
+              var compJson = await json.decode(competitionSrc);
+              for (var item in blogJson["posts"]){
+                var id = createDocID(item["title"]);
+                await ref.collection("blogs").document(id).setData(item);
+              }
+              for (var item in compJson["competitions"]){
+                await ref.collection("competitions").add(item);
+              }
+              var contentData = await json.decode(contentSrc);
+              await ref.collection("details").document("content").setData(contentData);
+              Map experienceData = await json.decode(experienceSrc.toString());
+              for (var i = 0; i < experienceData["experience"].length; i++) {
+                var docID = experienceData["experience"][i]["id"];
+                Map data = experienceData["experience"][i];
+                await ref.collection("experience").document(docID).setData(data);
+              }
+              var itemToUpload = await DefaultAssetBundle.of(context).load("assets/images/avatar.jpg");
+              Uint8List data = itemToUpload.buffer.asUint8List();
+              var storageRef = FirebaseStorage.instance.ref();
+              var imageRef = storageRef.child("profileImage");
+              StorageUploadTask uploadTask = imageRef.putData(data);
+              StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+              var imgURL = await taskSnapshot.ref.getDownloadURL();
+              Map temp = json.decode(src);
+              temp["details"]["profileImage"] = imgURL;
+              var resumeToUpload = await DefaultAssetBundle.of(context).load("assets/resume.pdf");
+              Uint8List resumeInBytes = resumeToUpload.buffer.asUint8List();
+              var resumeRef = storageRef.child("resume");
+              StorageUploadTask resumeUploadTask = resumeRef.putData(resumeInBytes);
+              StorageTaskSnapshot resumeUploadSnapshot = await resumeUploadTask.onComplete;
+              var resumeURL = await resumeUploadSnapshot.ref.getDownloadURL();
+              temp["details"]["resumeLink"] = resumeURL;
+              await ref.collection("details").document("details").setData(temp["details"]);
+              var projectsData = await DefaultAssetBundle.of(context).loadString("assets/data/projects.json");
+              Map projectsJson = await json.decode(projectsData.toString());
+              for (var i = 0; i < projectsJson["projects"].length; i++) {
+                var docID = projectsJson["projects"][i]["id"];
+                Map data = projectsJson["projects"][i];
+                await ref.collection("projects").document(docID).setData(data);
+              }
+              fetchDetails();
+              loading = true;
+              details = null;
+              setState((){
+              });
+            },
+            heroTag: "Initialize data",
+            child: Icon(
+              Icons.autorenew
+            ),
           )
-        );
-        Scaffold.of(context).showSnackBar(snackbar);
-      },
-      heroTag: "Initialize data",
-      child: Icon(
-        Icons.autorenew
+        ],
       ),
     );
   }

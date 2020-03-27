@@ -19,6 +19,7 @@ dependencies:
   google_fonts: any
   image_picker: any
   intl: any
+  file_picker: any
 
 dev_dependencies:
   flutter_test:
@@ -29,3 +30,4 @@ flutter:
   assets:
     - assets/images/
     - assets/data/
+    - assets/

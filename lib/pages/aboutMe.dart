@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'editContent.dart';
 
 class AboutScreen extends StatefulWidget {
   @override
@@ -9,14 +10,12 @@ class AboutScreen extends StatefulWidget {
 
 class _AboutScreenState extends State<AboutScreen> {
 
-  var details, content;
+  var content;
 
   fetchDetails() async{
     var ref = Firestore.instance.collection("details");
-    var tempDetails = await ref.document("details").get();
     var tempContent = await ref.document("content").get();
     setState(() {
-      details = tempDetails;
       content = tempContent;
     });
   }
@@ -46,7 +45,7 @@ class _AboutScreenState extends State<AboutScreen> {
           ),
         ),
       ),
-      body: details != null && content != null ? SingleChildScrollView(
+      body: content != null ? SingleChildScrollView(
         child: Center(
           child: Column(
             children: <Widget>[
@@ -88,6 +87,29 @@ class _AboutScreenState extends State<AboutScreen> {
         ),
       ) : Center(
         child: CircularProgressIndicator(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => EditContentPage(
+                aboutText: content["aboutText"],
+                contactContent: content["contactContent"],
+                footerText: content["footerText"],
+                hallOfFameContent: content["hallOfFameContent"],
+                projectsContent: content["projectsContent"],
+                responsibilityContent: content["responsibilityContent"],
+                workshopContent: content["workshopContent"]
+              )
+            )
+          ).then((onValue){
+            setState(() {
+              fetchDetails();
+            });
+          });
+        },
+        child: Icon(Icons.edit),
       ),
     );
   }

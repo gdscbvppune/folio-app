@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class EditHomeScreen extends StatefulWidget {
 
@@ -39,6 +43,9 @@ class _EditHomeScreenState extends State<EditHomeScreen> {
   FocusNode mediumFocusNode = FocusNode();
   FocusNode fiveHundredPxFocusNode = FocusNode();
   FocusNode linkedinFocusNode = FocusNode();
+
+  File resumeFile;
+  File imageFile;
 
   @override
   void initState() {
@@ -622,6 +629,44 @@ class _EditHomeScreenState extends State<EditHomeScreen> {
                   },
                 ),
               ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: 24,
+                  horizontal: 12
+                ),
+                child: RaisedButton.icon(
+                  onPressed: () async{
+                    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+                    setState(() {
+                      imageFile = image;
+                    });
+                  },
+                  icon: Icon(
+                    Icons.photo_album
+                  ),
+                  label: Text(
+                    "Select Image"
+                  )
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 24
+                ),
+                child: RaisedButton.icon(
+                  onPressed: () async{
+                    File file = await FilePicker.getFile();
+                    setState(() {
+                      resumeFile = file;
+                    });
+                  },
+                  icon: Icon(Icons.folder_open),
+                  label: Text(
+                    "Select resume file"
+                  )
+                ),
+              ),
               SizedBox(
                 height: 42,
               )
@@ -649,6 +694,22 @@ class _EditHomeScreenState extends State<EditHomeScreen> {
             "tagline": taglineController.text,
             "twitter": twitterLinkController.text
           };
+          if(imageFile != null){
+            var storageRef = FirebaseStorage.instance.ref();
+            await storageRef.child("profileImage").delete();
+            StorageUploadTask uploadTask = storageRef.child("profileImage").putFile(imageFile);
+            StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+            var imgURL = await taskSnapshot.ref.getDownloadURL();
+            updatedData["profileImage"] = imgURL;
+          }
+          if(resumeFile != null){
+            var storageRef = FirebaseStorage.instance.ref();
+            await storageRef.child("resume").delete();
+            StorageUploadTask uploadTask = storageRef.child("resume").putFile(resumeFile);
+            StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+            var resumeURL = await taskSnapshot.ref.getDownloadURL();
+            updatedData["resumeLink"] = resumeURL;
+          }
           var ref = Firestore.instance;
           await ref.collection("details").document("details").setData(updatedData);
           Navigator.pop(context);

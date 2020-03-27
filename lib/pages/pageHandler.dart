@@ -22,7 +22,7 @@ class PageHandlerState extends State<PageHandler> {
   
   @override
   void initState() {
-    this.currentPage = ExperiencePage();
+    this.currentPage = HomeScreen();
     super.initState();
   }
 

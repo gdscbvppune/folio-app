@@ -1,0 +1,20 @@
+{
+    "competitions": [
+        {
+            "date": "19th Sept - 20th Sept 2020",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam finibus sit amet erat eget tincidunt. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed volutpat ex et egestas ornare. Donec pellentesque nisl sit amet sodales lacinia. Nam ut dolor feugiat, cursus augue eu, tempus est. Phasellus non euismod enim, at efficitur velit. Fusce tempus ex sit amet metus pulvinar rhoncus at nec urna. Curabitur tristique at ante vel finibus. Proin finibus congue ante, quis placerat lacus venenatis et. Integer varius vestibulum sapien, sed fermentum arcu vestibulum sed. Duis quis nibh id mauris consectetur interdum nec eget metus.",
+            "link": "https://google.com/",
+            "organisers": "Google",
+            "title": "Title Demo",
+            "venue": "sample venue"
+        },
+        {
+            "date": "19th Sept - 20th Sept 2020",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam finibus sit amet erat eget tincidunt. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed volutpat ex et egestas ornare. Donec pellentesque nisl sit amet sodales lacinia. Nam ut dolor feugiat, cursus augue eu, tempus est. Phasellus non euismod enim, at efficitur velit. Fusce tempus ex sit amet metus pulvinar rhoncus at nec urna. Curabitur tristique at ante vel finibus. Proin finibus congue ante, quis placerat lacus venenatis et. Integer varius vestibulum sapien, sed fermentum arcu vestibulum sed. Duis quis nibh id mauris consectetur interdum nec eget metus.",
+            "link": "https://google.com/",
+            "organisers": "Google",
+            "title": "Title Demo",
+            "venue": "sample venue"
+        }
+    ]
+}

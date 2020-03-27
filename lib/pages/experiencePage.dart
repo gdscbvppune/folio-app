@@ -11,6 +11,9 @@ class ExperiencePage extends StatefulWidget {
 }
 
 class _ExperiencePageState extends State<ExperiencePage> {
+
+  int len = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +43,7 @@ class _ExperiencePageState extends State<ExperiencePage> {
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if(snapshot.hasData){
             if(snapshot.data.documents.length != 0){
+              len = snapshot.data.documents.length;
               return ListView.builder(
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (BuildContext context, int index){
@@ -82,10 +86,12 @@ class _ExperiencePageState extends State<ExperiencePage> {
                         ),
                       ),
                       onTap: (){
+                        setState(() {});
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) => ExperienceDetail(
+                              id: len.toString(),
                               details: snapshot.data.documents[index]["desc"],
                               title: snapshot.data.documents[index]["title"],
                               period: snapshot.data.documents[index]["period"],
@@ -142,11 +148,13 @@ class _ExperiencePageState extends State<ExperiencePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
+          setState(() {});
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => AddEditPositionsPage(
                 pageTitle: "Add Experience",
+                id: len.toString(),
               )
             )
           );

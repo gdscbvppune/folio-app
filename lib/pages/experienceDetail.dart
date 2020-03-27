@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'addEditPositions.dart';
 
 class ExperienceDetail extends StatefulWidget {
 
-  final String title, period, details, institute, instituteURL;
-  ExperienceDetail({this.title, this.details, this.period, this.institute, this.instituteURL});
+  final String title, period, details, institute, instituteURL, id;
+  ExperienceDetail({this.title, this.details, this.period, this.institute, this.instituteURL, this.id});
 
   @override
   _ExperienceDetailState createState() => _ExperienceDetailState();
@@ -106,6 +107,29 @@ class _ExperienceDetailState extends State<ExperienceDetail> {
               )
             ],
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => AddEditPositionsPage(
+                pageTitle: "Edit Details",
+                title: widget.title,
+                institute: widget.institute,
+                instituteURL: widget.instituteURL,
+                description: widget.details,
+                id: widget.id,
+                period: widget.period
+              )
+            )
+          ).then((onValue){
+            Navigator.pop(context);
+          });
+        },
+        child: Icon(
+          Icons.edit
         ),
       ),
     );
