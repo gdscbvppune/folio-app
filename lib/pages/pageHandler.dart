@@ -22,7 +22,7 @@ class PageHandlerState extends State<PageHandler> {
   
   @override
   void initState() {
-    this.currentPage = HallOfFame();
+    this.currentPage = ExperiencePage();
     super.initState();
   }
 
@@ -117,7 +117,7 @@ class PageHandlerState extends State<PageHandler> {
               onTap: () {
                 Navigator.pop(context);
                 setState(() {
-                  this.currentPage = HallOfFame();
+                  this.currentPage = ContactPage();
                 });
               },
             )

@@ -48,12 +48,14 @@ class _PortfolioState extends State<Portfolio> {
                     key: Key(
                       snapshot.data.documents[index].documentID
                     ),
+                    background: Container(
+                      color: Colors.red,
+                    ),
                     onDismissed: (direction) async{
                       Scaffold.of(context).removeCurrentSnackBar();
-                      var docID = snapshot.data.documents[index]["id"];
+                      var docID = snapshot.data.documents[index].documentID;
                       Map<String, dynamic> projectDetails = {
                         "github": snapshot.data.documents[index]["github"],
-                        "id": docID,
                         "title": snapshot.data.documents[index]["title"],
                         "shortDescription": snapshot.data.documents[index]["shortDescription"]
                       };

@@ -24,7 +24,7 @@ class _AddCompetitionState extends State<AddCompetition> {
   FocusNode eventVenueFocusNode = FocusNode();
   FocusNode eventOrganisersFocusNode = FocusNode();
   FocusNode eventDescFocusNode = FocusNode();
-  FocusNode eventRegistrationLinkFocusNode = FocusNode();
+  FocusNode eventLinkFocusNode = FocusNode();
 
   String getInitials(String text){
     var words = text.split(' ');
@@ -201,7 +201,7 @@ class _AddCompetitionState extends State<AddCompetition> {
                   },
                   onEditingComplete: (){
                     eventOrganisersFocusNode.unfocus();
-                    FocusScope.of(context).requestFocus(eventRegistrationLinkFocusNode);
+                    FocusScope.of(context).requestFocus(eventLinkFocusNode);
                   },
                   decoration: InputDecoration(
                     hintText: "For eg. EDCBVUCOEP",
@@ -210,6 +210,37 @@ class _AddCompetitionState extends State<AddCompetition> {
                   keyboardType: TextInputType.text,
                   maxLines: null,
                   textInputAction: TextInputAction.next,
+                  validator: (value){
+                    if(value.isEmpty){
+                      return 'This field is mandatory';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 32),
+                child: TextFormField(
+                  focusNode: eventLinkFocusNode,
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  controller: eventLinkController,
+                  onFieldSubmitted: (val){
+                    eventLinkController.text = val;
+                  },
+                  onEditingComplete: (){
+                    eventLinkFocusNode.unfocus();
+                  },
+                  decoration: InputDecoration(
+                    hintText: "For eg. https://google.com",
+                    labelText: "Event Link"
+                  ),
+                  keyboardType: TextInputType.url,
+                  maxLines: null,
+                  textInputAction: TextInputAction.done,
                   validator: (value){
                     if(value.isEmpty){
                       return 'This field is mandatory';

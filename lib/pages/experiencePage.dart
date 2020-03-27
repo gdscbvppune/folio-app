@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:folio/pages/experienceDetail.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'addEditPositions.dart';
 
 class ExperiencePage extends StatefulWidget {
   @override
@@ -138,6 +139,21 @@ class _ExperiencePageState extends State<ExperiencePage> {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => AddEditPositionsPage(
+                pageTitle: "Add Experience",
+              )
+            )
+          );
+        },
+        child: Icon(
+          Icons.add
+        ),
       ),
     );
   }
