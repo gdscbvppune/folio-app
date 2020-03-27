@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:folio/pages/blogDetails.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'editBlog.dart';
 
 class BlogScreen extends StatefulWidget {
   @override
@@ -134,6 +135,21 @@ class _BlogScreenState extends State<BlogScreen> {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => AddEditBlog(
+                pageTitle: "Add Post",
+              )
+            )
+          );
+        },
+        child: Icon(
+          FontAwesomeIcons.pencilAlt
+        ),
       ),
     );
   }

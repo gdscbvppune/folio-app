@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
+import 'editBlog.dart';
 
 class BlogDetails extends StatefulWidget {
 
@@ -22,13 +23,29 @@ class _BlogDetailsState extends State<BlogDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: InkWell(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: Icon(
+              Icons.chevron_left,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               SizedBox(
-                height: MediaQuery.of(context).size.height / 10,
+                height: MediaQuery.of(context).size.height / 12,
               ),
               widget.imgURL.length > 0 ? Padding(
                 padding: EdgeInsets.symmetric(
@@ -104,6 +121,24 @@ class _BlogDetailsState extends State<BlogDetails> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => AddEditBlog(
+                pageTitle: "Edit Post",
+                title: widget.title,
+                desc: widget.description,
+                date: widget.date,
+                workshop: widget.workshop,
+                img: widget.imgURL,
+              )
+            )
+          );
+        },
+        child: Icon(Icons.edit),
       ),
     );
   }

@@ -1,32 +1,30 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AddEvent extends StatefulWidget {
+class AddCompetition extends StatefulWidget {
 
-  final pageTitle, eventTitle, eventDate, eventTime, eventSpeaker, eventDescription, eventURL;
-  AddEvent({this.pageTitle, this.eventDate, this.eventDescription, this.eventSpeaker, this.eventTime, this.eventTitle, this.eventURL});
+  final pageTitle, eventTitle, eventDate, eventVenue, eventOrganisers, eventDescription, eventURL, docID;
+  AddCompetition({this.pageTitle, this.eventDate, this.eventDescription, this.eventOrganisers, this.eventVenue, this.eventTitle, this.eventURL, this.docID});
 
   @override
-  _AddEventState createState() => _AddEventState();
+  _AddCompetitionState createState() => _AddCompetitionState();
 }
 
-class _AddEventState extends State<AddEvent> {
+class _AddCompetitionState extends State<AddCompetition> {
 
   TextEditingController eventTitleController = TextEditingController();
   TextEditingController eventDateController = TextEditingController();
-  TextEditingController eventTimeController = TextEditingController();
-  TextEditingController eventSpeakerController = TextEditingController();
+  TextEditingController eventVenueController = TextEditingController();
+  TextEditingController eventOrganisersController = TextEditingController();
   TextEditingController eventDescController = TextEditingController();
-  TextEditingController eventRegistrationLinkController = TextEditingController();
+  TextEditingController eventLinkController = TextEditingController();
 
   FocusNode eventTitleFocusNode = FocusNode();
   FocusNode eventDateFocusNode = FocusNode();
-  FocusNode eventTimeFocusNode = FocusNode();
-  FocusNode eventSpeakerFocusNode = FocusNode();
+  FocusNode eventVenueFocusNode = FocusNode();
+  FocusNode eventOrganisersFocusNode = FocusNode();
   FocusNode eventDescFocusNode = FocusNode();
   FocusNode eventRegistrationLinkFocusNode = FocusNode();
-
-  File posterImage;
 
   String getInitials(String text){
     var words = text.split(' ');
@@ -44,9 +42,9 @@ class _AddEventState extends State<AddEvent> {
     eventTitleController.text = widget.eventTitle;
     eventDescController.text = widget.eventDescription;
     eventDateController.text = widget.eventDate;
-    eventTimeController.text = widget.eventTime;
-    eventSpeakerController.text = widget.eventSpeaker;
-    eventRegistrationLinkController.text = widget.eventURL;
+    eventVenueController.text = widget.eventVenue;
+    eventOrganisersController.text = widget.eventOrganisers;
+    eventLinkController.text = widget.eventURL;
     super.initState();
   }
 
@@ -55,8 +53,7 @@ class _AddEventState extends State<AddEvent> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          
-          "Edit Event"
+          widget.pageTitle
         ),
         centerTitle: true,
       ),
@@ -72,6 +69,7 @@ class _AddEventState extends State<AddEvent> {
                 child: TextFormField(
                   focusNode: eventTitleFocusNode,
                   autocorrect: false,
+                  autofocus: true,
                   controller: eventTitleController,
                   onFieldSubmitted: (val){
                     eventTitleController.text = val;
@@ -86,6 +84,7 @@ class _AddEventState extends State<AddEvent> {
                   ),
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.words,
                   validator: (value){
                     if(value.isEmpty){
                       return 'This field is mandatory';
@@ -103,6 +102,7 @@ class _AddEventState extends State<AddEvent> {
                   focusNode: eventDescFocusNode,
                   autocorrect: false,
                   controller: eventDescController,
+                  textCapitalization: TextCapitalization.sentences,
                   onFieldSubmitted: (val){
                     eventDescController.text = val;
                   },
@@ -139,14 +139,13 @@ class _AddEventState extends State<AddEvent> {
                   },
                   onEditingComplete: (){
                     eventDateFocusNode.unfocus();
-                    FocusScope.of(context).requestFocus(eventTimeFocusNode);
+                    FocusScope.of(context).requestFocus(eventVenueFocusNode);
                   },
                   decoration: InputDecoration(
-                    hintText: "For eg. 2019-01-15",
+                    hintText: "For eg. 19th - 20th October 2019",
                     labelText: "Competition Date"
                   ),
                   keyboardType: TextInputType.text,
-                  maxLines: null,
                   textInputAction: TextInputAction.next,
                   validator: (value){
                     if(value.isEmpty){
@@ -162,15 +161,15 @@ class _AddEventState extends State<AddEvent> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32),
                 child: TextFormField(
-                  focusNode: eventTimeFocusNode,
+                  focusNode: eventVenueFocusNode,
                   autocorrect: false,
-                  controller: eventTimeController,
+                  controller: eventVenueController,
                   onFieldSubmitted: (val){
-                    eventTimeController.text = val;
+                    eventVenueController.text = val;
                   },
                   onEditingComplete: (){
-                    eventTimeFocusNode.unfocus();
-                    FocusScope.of(context).requestFocus(eventSpeakerFocusNode);
+                    eventVenueFocusNode.unfocus();
+                    FocusScope.of(context).requestFocus(eventOrganisersFocusNode);
                   },
                   decoration: InputDecoration(
                     hintText: "Where this competition will held",
@@ -193,14 +192,15 @@ class _AddEventState extends State<AddEvent> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32),
                 child: TextFormField(
-                  focusNode: eventSpeakerFocusNode,
+                  focusNode: eventOrganisersFocusNode,
                   autocorrect: false,
-                  controller: eventSpeakerController,
+                  textCapitalization: TextCapitalization.words,
+                  controller: eventOrganisersController,
                   onFieldSubmitted: (val){
-                    eventSpeakerController.text = val;
+                    eventOrganisersController.text = val;
                   },
                   onEditingComplete: (){
-                    eventSpeakerFocusNode.unfocus();
+                    eventOrganisersFocusNode.unfocus();
                     FocusScope.of(context).requestFocus(eventRegistrationLinkFocusNode);
                   },
                   decoration: InputDecoration(
@@ -221,14 +221,28 @@ class _AddEventState extends State<AddEvent> {
               SizedBox(
                 height: 32,
               ),
-             
             ],
           )
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async{
-          
+          setState(() {});
+          Map<String, dynamic> competitionDetails = {
+            "title": eventTitleController.text,
+            "venue": eventVenueController.text,
+            "date": eventDateController.text,
+            "link": eventLinkController.text,
+            "organisers": eventOrganisersController.text,
+            "description": eventDescController.text
+          };
+          if(widget.docID == null){
+            await Firestore.instance.collection("competitions").add(competitionDetails);
+          }
+          else{
+            await Firestore.instance.collection("competitions").document(widget.docID).setData(competitionDetails);
+          }
+          Navigator.pop(context);
         },
         child: Icon(Icons.done),
       ),

@@ -5,6 +5,7 @@ import 'blogScreen.dart';
 import 'portfolioScreen.dart';
 import 'contactPage.dart';
 import 'aboutMe.dart';
+import 'hallOfFame.dart';
 
 class PageHandler extends StatefulWidget{
 
@@ -21,7 +22,7 @@ class PageHandlerState extends State<PageHandler> {
   
   @override
   void initState() {
-    this.currentPage = AboutScreen();
+    this.currentPage = HallOfFame();
     super.initState();
   }
 
@@ -67,6 +68,17 @@ class PageHandlerState extends State<PageHandler> {
             ),
             ListTile(
               title: Text(
+                "Hall of Fame"
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                setState(() {
+                  currentPage = HallOfFame();
+                });
+              },
+            ),
+            ListTile(
+              title: Text(
                 "Experience"
               ),
               onTap: () {
@@ -105,7 +117,7 @@ class PageHandlerState extends State<PageHandler> {
               onTap: () {
                 Navigator.pop(context);
                 setState(() {
-                  this.currentPage = ContactPage();
+                  this.currentPage = HallOfFame();
                 });
               },
             )

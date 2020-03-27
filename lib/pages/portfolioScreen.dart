@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:folio/pages/addEditProjects.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,6 +11,9 @@ class Portfolio extends StatefulWidget {
 }
 
 class _PortfolioState extends State<Portfolio> {
+
+  int id = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +40,7 @@ class _PortfolioState extends State<Portfolio> {
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if(snapshot.hasData){
             if(snapshot.data.documents.length != 0){
+              id = snapshot.data.documents.length;
               return ListView.builder(
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (BuildContext context, int index){
@@ -73,13 +78,32 @@ class _PortfolioState extends State<Portfolio> {
                         horizontal: 24
                       ),
                       child: ListTile(
-                        onTap: () async{
-                          if(await canLaunch(snapshot.data.documents[index]["github"])){
-                            launch(snapshot.data.documents[index]["github"]);
-                          }
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => AddEditProjects(
+                                pageTitle: "Edit Project",
+                                title: snapshot.data.documents[index]["title"],
+                                github: snapshot.data.documents[index]["github"],
+                                shortDesc: snapshot.data.documents[index]["shortDescription"],
+                                id: snapshot.data.documents[index].documentID,
+                              )
+                            )
+                          );
                         },
-                        trailing: Icon(
-                          FontAwesomeIcons.github
+                        trailing: InkWell(
+                          onTap: () async{
+                            if(await canLaunch(snapshot.data.documents[index]["github"])){
+                              launch(snapshot.data.documents[index]["github"]);
+                            }
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(18.0),
+                            child: Icon(
+                              FontAwesomeIcons.github
+                            ),
+                          ),
                         ),
                         title: Text(
                           snapshot.data.documents[index]["title"],
@@ -117,6 +141,25 @@ class _PortfolioState extends State<Portfolio> {
           }
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          setState(() {
+            
+          });
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => AddEditProjects(
+                pageTitle: "Add Project",
+                id: id.toString()
+              )
+            )
+          );
+        },
+        child: Icon(
+          Icons.add
+        ),
+      )
     );
   }
 }
