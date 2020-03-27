@@ -136,7 +136,9 @@ class _BlogDetailsState extends State<BlogDetails> {
                 img: widget.imgURL,
               )
             )
-          );
+          ).then((onValue){
+            Navigator.pop(context);
+          });
         },
         child: Icon(Icons.edit),
       ),

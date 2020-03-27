@@ -40,7 +40,7 @@ class _BlogScreenState extends State<BlogScreen> {
         centerTitle: true,
       ),
       body: StreamBuilder(
-        stream: Firestore.instance.collection("blog").snapshots(),
+        stream: Firestore.instance.collection("blogs").snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if(snapshot.hasData){
             if(snapshot.data.documents.length != 0){

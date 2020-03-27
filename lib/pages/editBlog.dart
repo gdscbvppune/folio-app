@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class AddEditBlog extends StatefulWidget{
 
@@ -22,6 +26,9 @@ class AddEditBlogState extends State<AddEditBlog>{
   FocusNode descFocusNode = FocusNode();
   FocusNode dateFocusNode = FocusNode();
 
+  File postImage;
+  String dropDownChoice;
+
   String reframeDate(String text){
     var words = text.split('-');
     return words[2] + "-" + words[1] + "-" + words[0];
@@ -43,6 +50,7 @@ class AddEditBlogState extends State<AddEditBlog>{
 
   @override
   void initState() {
+    dropDownChoice = widget.workshop;
     var dt = DateTime.now();
     var date = DateFormat.yMd().format(dt).toString().split('/');
     var newDate = date[1] + "-" + date[0] + "-" + date[2];
@@ -105,6 +113,40 @@ class AddEditBlogState extends State<AddEditBlog>{
                 SizedBox(
                   height: 32,
                 ),
+                ListTile(
+                  title: Text(
+                    "Is it a workshop you spoke on?"
+                  ),
+                  subtitle: DropdownButton<String>(
+                    value: dropDownChoice,
+                    icon: Icon(Icons.arrow_drop_down),
+                    iconSize: 18,
+                    elevation: 16,
+                    style: TextStyle(
+                      color: Colors.blue
+                    ),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.blue,
+                    ),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        dropDownChoice = newValue;
+                      });
+                    },
+                    items: <String>['true', 'false']
+                      .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      })
+                      .toList(),
+                  ),
+                ),
+                SizedBox(
+                  height: 32,
+                ),
                 TextFormField(
                   controller: dateController,
                   focusNode: dateFocusNode,
@@ -161,6 +203,18 @@ class AddEditBlogState extends State<AddEditBlog>{
                     descFocusNode.unfocus();
                   },
                 ),
+                RaisedButton.icon(
+                  onPressed: () async{
+                    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+                    setState(() {
+                      postImage = image;
+                    });
+                  },
+                  icon: Icon(Icons.photo_album),
+                  label: Text(
+                    "Select post image"
+                  )
+                ),
                 SizedBox(
                   height: 32,
                 )
@@ -170,12 +224,36 @@ class AddEditBlogState extends State<AddEditBlog>{
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async{
           var docID = createDocID(titleController.text);
-          print(docID);
-          if(formKey.currentState.validate()){
-            formKey.currentState.save();
+          Map<String, dynamic> blogPostDetails = {
+            "date": dateController.text,
+            "description": descController.text,
+            "imgURL": widget.img,
+            "title": titleController.text,
+            "workshop": dropDownChoice
+          };
+          if(postImage != null){
+            if(widget.img.length == 0){
+              var storageRef = FirebaseStorage.instance.ref();
+              var locRef = storageRef.child("blogs");
+              StorageUploadTask uploadTask = locRef.child(titleController.text).putFile(postImage);
+              StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+              var imgURL = await taskSnapshot.ref.getDownloadURL();
+              blogPostDetails["imgURL"] = imgURL;
+            }
+            else{
+              var storageRef = FirebaseStorage.instance.ref();
+              var locRef = storageRef.child("blogs");
+              await locRef.child(titleController.text).delete();
+              StorageUploadTask uploadTask = locRef.child(titleController.text).putFile(postImage);
+              StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+              var imgURL = await taskSnapshot.ref.getDownloadURL();
+              blogPostDetails["imgURL"] = imgURL;
+            }
           }
+          await Firestore.instance.collection("blogs").document(docID).setData(blogPostDetails);
+          Navigator.pop(context);
         },
         child: Icon(Icons.done),
       ),
