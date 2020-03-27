@@ -101,14 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               SizedBox(
-                height: 64,
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Lucy',
-                  style: TextStyle(fontSize: 32.0, color: Colors.white, fontFamily: "Product Sans",),
-                ),
+                height: MediaQuery.of(context).size.height / 6,
               ),
               CircleAvatar(
                 radius: 72,
@@ -121,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               signInButton(),
               SizedBox(
-                height: 64,
+                height: MediaQuery.of(context).size.height / 6,
               )
             ],
           ),
