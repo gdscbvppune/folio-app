@@ -27,7 +27,7 @@ class AddEditBlogState extends State<AddEditBlog>{
   FocusNode dateFocusNode = FocusNode();
 
   File postImage;
-  String dropDownChoice;
+  String dropDownChoice = "false";
 
   String reframeDate(String text){
     var words = text.split('-');
@@ -225,9 +225,15 @@ class AddEditBlogState extends State<AddEditBlog>{
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async{
+          descFocusNode.unfocus();
+          titleFocusNode.unfocus();
+          dateFocusNode.unfocus();
           var docID = createDocID(titleController.text);
+          var dt = dateController.text;
+          var words = dt.split('/');
+          var newDt = words[0] + "-" + words[1] + "-" + words[2];
           Map<String, dynamic> blogPostDetails = {
-            "date": dateController.text,
+            "date": reframeDate(newDt),
             "description": descController.text,
             "imgURL": widget.img,
             "title": titleController.text,
