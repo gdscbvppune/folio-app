@@ -42,7 +42,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
       allow read;
-      allow create, write, update, delete: if request.auth.token.email.matches("dscchapteremailaddress[@]gmail[.]com");
+      allow create, write, update, delete: if request.auth.token.email.matches("personalemailaddress[@]gmail[.]com");
     }
   }
 }
@@ -56,7 +56,7 @@ service firebase.storage {
   match /b/{bucket}/o {
     match /{allPaths=**} {
       allow read;
-      allow write, create, delete, update: if request.auth.token.email.matches("dscchapteremailaddress[@]gmail[.]com");
+      allow write, create, delete, update: if request.auth.token.email.matches("personalemailaddress[@]gmail[.]com");
     }
   }
 }
