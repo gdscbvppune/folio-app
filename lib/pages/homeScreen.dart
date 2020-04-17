@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Icon(Icons.email),
                     ),
-                  ) : null,
+                  ) : Container(),
                   details["github"].length > 0 ? InkWell(
                     onTap: () async{
                       if(await canLaunch(details["github"])){
@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Icon(FontAwesomeIcons.github),
                     ),
-                  ) : null,
+                  ) : Container(),
                   details["facebook"].length > 0 ? InkWell(
                     onTap: () async{
                       if(await canLaunch(details["facebook"])){
@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Icon(FontAwesomeIcons.facebook),
                     ),
-                  ) : null,
+                  ) : Container(),
                   details["instagram"].length > 0 ? InkWell(
                     onTap: () async{
                       if(await canLaunch(details["instagram"])){
@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Icon(FontAwesomeIcons.instagram),
                     ),
-                  ) : null,
+                  ) : Container(),
                   details["linkedin"].length > 0 ? InkWell(
                     onTap: () async{
                       if(await canLaunch(details["linkedin"])){
@@ -162,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Icon(FontAwesomeIcons.linkedin),
                     ),
-                  ) : null,
+                  ) : Container(),
                   details["twitter"].length > 0 ? InkWell(
                     onTap: () async{
                       if(await canLaunch(details["twitter"])){
@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Icon(FontAwesomeIcons.twitter),
                     ),
-                  ) : null,
+                  ) : Container(),
                   details["medium"].length > 0 ? InkWell(
                     onTap: () async{
                       if( await canLaunch(details["medium"]) ){
@@ -184,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Icon(FontAwesomeIcons.medium),
                     ),
-                  ) : null,
+                  ) : Container(),
                   details["spotify"].length > 0 ? InkWell(
                     onTap: () async{
                       if(await canLaunch(details["spotify"])){
@@ -195,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Icon(FontAwesomeIcons.spotify),
                     ),
-                  ) : null,
+                  ) : Container(),
                   details["fiveHundredPx"].length > 0 ? InkWell(
                     onTap: () async{
                       if(await canLaunch(details["fiveHundredPx"])){
@@ -206,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(8),
                       child: Icon(FontAwesomeIcons.fiveHundredPx),
                     ),
-                  ) : null,
+                  ) : Container(),
                 ],
               ),
               SizedBox(
