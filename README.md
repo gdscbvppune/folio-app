@@ -4,7 +4,7 @@
 [![LICENSE](https://img.shields.io/badge/License-MIT?style=plastic)](https://github.com/dscbvppune/folio-app/blob/master/LICENSE)
 
 ## Overview
-This project aims at making websites easier to manage. We at DSC BVP Pune noticed that many students or professionals either don't have a website or face difficulty maintaining one. We came up with a solution to make it accesssible for everyone to be able to manage and build a website with the help of a mobile app. 
+This project aims at making websites easier to manage. We at DSC BVP Pune noticed that many students or professionals either don't have a website or face difficulty maintaining one. We came up with a solution to make it accesssible for everyone to be able to manage and build a website with the help of a mobile app. It works in association with our [Folio](https://github.com/dscbvppune/folio-web/) project.
 
 ## Features
 
